@@ -1,0 +1,24 @@
+FROM balenalib/%%BALENA_MACHINE_NAME%%-ubuntu:bionic-build
+# bionic:
+# Linux 5b2c8bb2347a 4.14.98 #1 SMP PREEMPT Mon Jun 17 15:06:48 UTC 2019 aarch64 aarch64 aarch64 GNU/Linux
+
+RUN install_packages \
+    logrotate 
+
+# switch on systemd init system in container -- requires "privileged: true" in docker-compose.yml
+ENV INITSYSTEM on
+
+# log rotation -- installating logrotate creates /etc/cron.daily/logrotate
+# replace with our script which will put the status file in the persistent volume
+# /eio-data/log/logrotate
+COPY ./logrotate.conf /etc/logrotate.conf
+RUN chmod 0644 /etc/logrotate.conf
+COPY ./logrotate.cron.sh /etc/cron.hourly/logrotate
+COPY ./logrotate.cron.sh /etc/cron.daily/logrotate
+
+WORKDIR /usr/src/app/
+COPY ./dummy-web-server.py ./
+COPY ./*.bash ./
+
+# this will run when the container starts up on the device
+CMD ["/usr/src/app/runCommand.bash"]

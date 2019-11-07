@@ -1,0 +1,18 @@
+# docker-compose.yml for boson-controller on Raspberry Pi 3B
+version: "2.1"
+volumes:
+  shared-volume: 
+services:
+  localServer:
+    build: ./LocalServer
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    labels:
+      io.resin.features.supervisor-api: '1'
+      io.resin.features.balena-api: '1'
+    privileged: true
+    restart: always
+    volumes:
+      - "shared-volume:/data"
