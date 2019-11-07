@@ -5,7 +5,7 @@ This balenaOS example configures logrotate to rotate files matching the pattern
 
 ## Behaviour on restart
 
-When the localServer service container is restarted the runCommand.bash script moves all of the files in /data/log to /data/log-backup-yyyymmmdd-hhmm this allows the testing of logrotate will new and unrotated log files. 
+When the localServer service container is restarted the runCommand.bash script moves all of the files in `/data/log` to the timestamped path `/data/log-yyyymmmdd-hhmm` this allows the testing of logrotate will new and unrotated log files. 
 
 ## Shared volume
 
