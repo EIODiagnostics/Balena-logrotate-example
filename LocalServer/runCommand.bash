@@ -11,7 +11,7 @@ source $DIR/util.bash
 
 function checkLogRotate() {
     set +e
-    statusDir=/eio-data/log/logrotate
+    statusDir=/data/log/logrotate
 
     # Clean non existent log file entries from status file
 
@@ -40,6 +40,14 @@ function checkLogRotate() {
         echolog "logrotate: /etc/logrotate.conf has permissions $logrotatePermissions"
     fi
 
+    logrotateCronPermissions=$(stat --format "%a" /etc/cron.daily/logrotate)
+    if [ $logrotatePermissions -eq 644 ]; then
+        echolog "logrotate: /etc/cron.daily/logrotate has permissions 0644"
+    else
+        echolog "logrotate: /etc/cron.daily/logrotate has permissions $logrotatePermissions"
+    fi
+
+
     set -e
 }
 
@@ -61,5 +69,7 @@ function main() {
 }
 
 idleIfDebugSet
+checkLogRotate
 main
+errorExitWithDelay "Error: execution unexpectedly reached the end of runCommand.bash"
 

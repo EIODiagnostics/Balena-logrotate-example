@@ -29,11 +29,6 @@ import argparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
 
-lastLog = "";
-lastLogCount = 0;
-
-
-
 class S(BaseHTTPRequestHandler):
 
     def _set_headers(self):
@@ -55,12 +50,7 @@ class S(BaseHTTPRequestHandler):
         datetime_object = datetime.utcnow()
         datetime_string = datetime_object.strftime("%Y-%m-%d %H:%M:%S")
         log_string = "[" + datetime_string + "] " + self.address_string() + " " + self.command + " " + self.path
-        if log_string != lastLog:
-            print(log_string + " " + str(lastLogCount))
-            lastLog = log_string
-            lastLogCount = 0
-        else:
-            lastLogCount += 1
+        print(log_string)
 
     def do_GET(self):
         self._set_headers()

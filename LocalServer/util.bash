@@ -38,7 +38,7 @@ function initLogging() {
         LOG_FORMAT="[%Y-%m-%d %T.000000]"
         debuglog "Running on Darwin, LOG_FORMAT = $LOG_FORMAT"
     else
-        LOG_FORMAT="[%Y-%m-%d %T.6N]"
+        LOG_FORMAT="[%Y-%m-%d %T.%6N]"
         debuglog "Running on $OS_NAME, LOG_FORMAT = $LOG_FORMAT"
     fi
 }
