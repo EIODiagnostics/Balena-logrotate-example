@@ -6,7 +6,7 @@
 # 1. define status dir on persistent storage using statusDir variable
 # 2. added mkdir -p $statusDir
 # 3. added --state=$statusDir/status to logrotate command line
-statusDir=/eio-data/log/logrotate
+statusDir=/data/log/logrotate
 
 # Clean non existent log file entries from status file
 

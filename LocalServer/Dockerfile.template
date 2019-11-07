@@ -10,7 +10,7 @@ ENV INITSYSTEM on
 
 # log rotation -- installating logrotate creates /etc/cron.daily/logrotate
 # replace with our script which will put the status file in the persistent volume
-# /eio-data/log/logrotate
+# /data/log/logrotate
 COPY ./logrotate.conf /etc/logrotate.conf
 RUN chmod 0644 /etc/logrotate.conf
 COPY ./logrotate.cron.sh /etc/cron.hourly/logrotate
