@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# move all old log files:
+mv /data/log /data/log-$(date "+%Y%m%d-%k%M")
+mkdir /data/log
+
 set -eo pipefail
 
 # setup logging and other utilities

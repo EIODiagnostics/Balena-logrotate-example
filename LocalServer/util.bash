@@ -36,33 +36,14 @@ function initLogging() {
 
     if [ "$OS_NAME" == "Darwin" ]; then
         LOG_FORMAT="[%Y-%m-%d %T.000000]"
-        debuglog "Running on Darwin, LOG_FORMAT = $LOG_FORMAT"
     else
         LOG_FORMAT="[%Y-%m-%d %T.%6N]"
-        debuglog "Running on $OS_NAME, LOG_FORMAT = $LOG_FORMAT"
-    fi
-}
-
-function initVariables() {
-    if [ -z ${DELAY_SLEEP_SECONDS+x} ]; then
-        export DELAY_SLEEP_SECONDS=0
-    fi
-
-    if [ -z ${LOG_LEVEL+x} ]; then
-        DELAY_SLEEP_SECONDS=0
-    elif [ "$LOG_LEVEL" != "debug" ]; then
-        DELAY_SLEEP_SECONDS=0
-    fi
-
-    if [ $DELAY_SLEEP_SECONDS -ne 0 ]; then
-        echolog "Warning: all exits with delay will include a delay of $DELAY_SLEEP_SECONDS seconds"
     fi
 }
 
 function logContainerStartup() {
-    doubleLog "Starting Container ${BALENA_SERVICE_NAME}"
-    doubleLog "Uptime:" `uptime`
-    debuglog "OS_NAME is $OS_NAME"
+    startLog "Starting Container ${BALENA_SERVICE_NAME}"
+    startLog "Uptime:" `uptime`
 }
 
 # from https://serverfault.com/a/880885
@@ -87,40 +68,11 @@ function echolog() {
     fi
 }
 
-# debug level version of echolog() 
-function debuglog() {
-    if [ -z ${LOG_LEVEL+x} ]; then
-        return
-    elif [ "$LOG_LEVEL" != "debug" ]; then
-        return
-    fi
-
-    if [ $# -eq 0 ]; then 
-        cat - | while read -r message
-        do
-            echo "$(date "+${LOG_FORMAT}") Debug: $message"
-        done
-    else
-        echo "$(date "+${LOG_FORMAT}") Debug: $*"
-    fi
-}
-
 # log to our regular logfile and a special startup log file
-function doubleLog() {
+function startLog() {
     logmsg="$(date "+${LOG_FORMAT}") $*"
     echo "$logmsg"
     echo "$logmsg" >> ${LOG_FOLDER_AND_PREFIX}-start.log
-}
-
-function errorExitWithDelay() {
-    if [ $# -ne 0 ]; then 
-        echolog "Exiting: $*"
-    fi
-    if [ $DELAY_SLEEP_SECONDS -ne 0 ]; then
-        echolog "Sleeping $DELAY_SLEEP_SECONDS seconds"
-        sleep $DELAY_SLEEP_SECONDS
-    fi
-    exit
 }
 
 # https://forums.balena.io/t/how-to-debug-a-container-which-is-in-a-crash-loop/5638
@@ -166,6 +118,4 @@ function restartContainer() {
 }
 
 initLogging $*
-initVariables
 logContainerStartup
-
