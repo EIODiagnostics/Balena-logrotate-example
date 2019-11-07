@@ -9,11 +9,17 @@ DIR=$(realpath "${DIR}")    # resolve its full path if need be
 export DO_NOT_LOG_TO_CONSOLE
 source $DIR/util.bash 
 
+function printFilepathPermissions() {
+    permissions=$(stat --format "%a" $1) 
+    echolog "$1 has permissions $permissions"
+}
+
 function checkLogRotate() {
     set +e
-    statusDir=/data/log/logrotate
+    # run logrotate script once to create the statusDir:
+    /etc/cron.daily/logrotate
 
-    # Clean non existent log file entries from status file
+    statusDir=/data/log/logrotate
 
     if [ -d $statusDir ]; then
         echolog "logrotate: $statusDir exists"
@@ -33,20 +39,9 @@ function checkLogRotate() {
         echolog "logrotate: /usr/sbin/logrotate is not executable"
     fi
 
-    logrotatePermissions=$(stat --format "%a" /etc/logrotate.conf)
-    if [ $logrotatePermissions -eq 644 ]; then
-        echolog "logrotate: /etc/logrotate.conf has permissions 0644"
-    else
-        echolog "logrotate: /etc/logrotate.conf has permissions $logrotatePermissions"
-    fi
-
-    logrotateCronPermissions=$(stat --format "%a" /etc/cron.daily/logrotate)
-    if [ $logrotatePermissions -eq 644 ]; then
-        echolog "logrotate: /etc/cron.daily/logrotate has permissions 0644"
-    else
-        echolog "logrotate: /etc/cron.daily/logrotate has permissions $logrotatePermissions"
-    fi
-
+    printFilepathPermissions "/etc/cron.daily/logrotate"
+    printFilepathPermissions "/etc/cron.hourly/logrotate"
+    printFilepathPermissions "/etc/logrotate.conf"
 
     set -e
 }
@@ -57,7 +52,7 @@ function idleIfDebugSet() {
         echolog "idleIfDebugSet() called."
         while : ; do
             echolog "Idling..."
-            sleep 600
+            sleep 10
         done
     fi
 }
