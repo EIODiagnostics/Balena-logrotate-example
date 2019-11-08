@@ -44,7 +44,6 @@ function checkLogRotate() {
     fi
 
     printFilepathPermissions "/etc/cron.daily/logrotate"
-    printFilepathPermissions "/etc/cron.hourly/logrotate"
     printFilepathPermissions "/etc/logrotate.conf"
 
     set -e
@@ -69,6 +68,8 @@ function main() {
 
 idleIfDebugSet
 checkLogRotate
+/etc/init.d/cron start
+/etc/init.d/cron status | echolog
 main
 errorExitWithDelay "Error: execution unexpectedly reached the end of runCommand.bash"
 

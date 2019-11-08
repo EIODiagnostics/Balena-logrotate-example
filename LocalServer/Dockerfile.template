@@ -5,16 +5,15 @@ FROM balenalib/%%BALENA_MACHINE_NAME%%-ubuntu:bionic-build
 RUN install_packages \
     logrotate 
 
-# switch on systemd init system in container -- requires "privileged: true" in docker-compose.yml
-ENV INITSYSTEM on
-
 # log rotation -- installating logrotate creates /etc/cron.daily/logrotate
 # replace with our script which will put the status file in the persistent volume
 # /data/log/logrotate
 COPY ./logrotate.conf /etc/logrotate.conf
 RUN chmod 0644 /etc/logrotate.conf
-COPY ./logrotate.cron.sh /etc/cron.hourly/logrotate
 COPY ./logrotate.cron.sh /etc/cron.daily/logrotate
+
+# run logrotate at minute 0 past every hour from 0 to 23" -- https://crontab.guru
+RUN echo "0 0-23 * * * /etc/cron.daily/logrotate" | crontab
 
 WORKDIR /usr/src/app/
 COPY ./dummy-web-server.py ./
