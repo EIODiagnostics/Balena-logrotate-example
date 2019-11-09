@@ -11,9 +11,8 @@ RUN install_packages \
 COPY ./logrotate.conf /etc/logrotate.conf
 RUN chmod 0644 /etc/logrotate.conf
 COPY ./logrotate.cron.sh /etc/cron.daily/logrotate
-
-# run logrotate at minute 0 past every hour from 0 to 23" -- https://crontab.guru
-RUN echo "0 0-23 * * * /etc/cron.daily/logrotate" | crontab
+COPY ./logrotate.cron.sh /etc/cron.hourly/logrotate
+# Note: it is necessary to run `/etc/init.d/cron start` in the shell
 
 WORKDIR /usr/src/app/
 COPY ./dummy-web-server.py ./

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # move all old log files:
-mv /data/log /data/log-$(date "+%Y%m%d-%k%M")
-mkdir /data/log
+# mv /data/log /data/log-$(date "+%Y%m%d-%k%M")
+# mkdir /data/log
 
 set -eo pipefail
 
@@ -66,10 +66,12 @@ function main() {
     echolog "web server exited with code $?"
 }
 
-idleIfDebugSet
 checkLogRotate
 /etc/init.d/cron start
 /etc/init.d/cron status | echolog
+echolog "crontab: $(crontab -l)"
+
+idleIfDebugSet
 main
 errorExitWithDelay "Error: execution unexpectedly reached the end of runCommand.bash"
 
