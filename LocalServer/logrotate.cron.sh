@@ -7,6 +7,8 @@
 # 2. added mkdir -p $statusDir
 # 3. added --state=$statusDir/status to logrotate command line
 statusDir=/data/log/logrotate
+logfile=$statusDir/logrotate.log
+echo $(date +"[%Y-%m-%d %T]") "[$_]" >> $logfile
 
 # Clean non existent log file entries from status file
 
@@ -22,4 +24,4 @@ mv status.clean status
 
 test -x /usr/sbin/logrotate || exit 0
 
-/usr/sbin/logrotate /etc/logrotate.conf --state=$statusDir/status
+/usr/sbin/logrotate /etc/logrotate.conf --state=$statusDir/status >> $logfile 2>&1
